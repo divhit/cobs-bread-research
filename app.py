@@ -111,7 +111,7 @@ Your task is to find and analyze ALL available reviews across EVERY social media
 
 ## ANALYSIS FRAMEWORK:
 
-### SECTION 1: 5-STAR REVIEWS (Excellent - Detailed Analysis)
+### SECTION 1: 5-STAR REVIEWS (Perfect Score - Detailed Analysis)
 For every 5-star review found, extract and analyze:
 1. **Beloved Products**: List EVERY product mentioned positively with specific details
    - Bread types (sourdough, rye, whole wheat, etc.)
@@ -145,8 +145,8 @@ For every 5-star review found, extract and analyze:
    - Quality-to-price ratio comments
    - Deals and promotions mentioned
 
-### SECTION 2: 4-STAR REVIEWS (Good but with reservations - Balanced Analysis)
-Analyze from DUAL PERSPECTIVES:
+### SECTION 2: 4-5 STAR REVIEWS (Excellent but not perfect - Balanced Analysis)
+For reviews rated between 4 and 5 stars (excluding exact 5-star), analyze from DUAL PERSPECTIVES:
 
 **A) Customer/Reviewer Perspective**:
 1. **What They Loved**:
@@ -181,7 +181,25 @@ Analyze from DUAL PERSPECTIVES:
    - Product suggestions
    - Service improvements needed
 
-### SECTION 3: 3-STAR AND BELOW (Critical Analysis)
+### SECTION 3: 3-4 STAR REVIEWS (Mixed Experience - Improvement Opportunities)
+For reviews rated between 3 and 4 stars, analyze:
+
+1. **Balanced Feedback**:
+   - What worked vs. what didn't
+   - Products that received mixed reviews
+   - Service inconsistencies noted
+
+2. **Specific Improvement Areas**:
+   - Recurring themes in "middle ground" reviews
+   - Common "almost great" experiences
+   - Suggestions customers provided
+
+3. **Conversion Opportunities**:
+   - What would turn these into 5-star experiences
+   - Quick wins identified
+   - Systemic issues to address
+
+### SECTION 4: 3 STARS AND BELOW (Critical Analysis)
 For every review rated 3 stars or lower, deeply analyze:
 
 1. **Problematic Products** (CRITICAL - Be Exhaustive):
@@ -217,27 +235,27 @@ For every review rated 3 stars or lower, deeply analyze:
    - Seasonal patterns in complaints
    - Response from bakery (if any)
 
-### SECTION 4: COMPETITIVE LANDSCAPE
+### SECTION 5: COMPETITIVE LANDSCAPE
 - How does this COBS location compare to:
   - Other COBS Bread locations nearby
   - Local independent bakeries
   - Chain competitors (Tim Hortons, Panera, etc.)
   - Grocery store bakeries
 
-### SECTION 5: TREND ANALYSIS
+### SECTION 6: TREND ANALYSIS
 - Review sentiment over time
 - Seasonal patterns
 - Post-COVID changes
 - New product reception
 - Staff/management change indicators
 
-### SECTION 6: SOCIAL MEDIA SENTIMENT
+### SECTION 7: SOCIAL MEDIA SENTIMENT
 - Hashtag analysis
 - Viral moments (positive or negative)
 - Influencer mentions
 - User-generated content themes
 
-### SECTION 7: ACTIONABLE INSIGHTS SUMMARY
+### SECTION 8: ACTIONABLE INSIGHTS SUMMARY
 Provide specific, actionable recommendations for:
 1. Products to highlight/promote
 2. Products to improve or consider removing
@@ -245,14 +263,14 @@ Provide specific, actionable recommendations for:
 4. Marketing opportunities
 5. Competitive positioning strategies
 
-## SECTION 8: REVIEW STATISTICS & DATA SOURCES (MANDATORY)
+## SECTION 9: REVIEW STATISTICS & DATA SOURCES (MANDATORY)
 **THIS SECTION IS REQUIRED - You MUST include this exact breakdown:**
 
-### 8.1 Total Reviews Analyzed
+### 9.1 Total Reviews Analyzed
 - **Total number of reviews analyzed**: [exact count]
 - **Date range of reviews**: [earliest review date] to {today}
 
-### 8.2 Reviews by Platform (provide exact counts)
+### 9.2 Reviews by Platform (provide exact counts)
 Create a table with the following format:
 | Platform | # of Reviews | Date Range | Average Rating |
 |----------|--------------|------------|----------------|
@@ -272,17 +290,54 @@ Create a table with the following format:
 | Other Sources | XX | MM/YYYY - MM/YYYY | N/A |
 | **TOTAL** | **XXX** | | |
 
-### 8.3 Rating Distribution (across all platforms)
-- 5-star reviews: XX (XX%)
-- 4-star reviews: XX (XX%)
-- 3-star reviews: XX (XX%)
-- 2-star reviews: XX (XX%)
-- 1-star reviews: XX (XX%)
+### 9.3 Rating Distribution by Category
+Provide breakdown using these exact categories:
+- **5 Stars (Perfect)**: XX reviews (XX%)
+- **4-5 Stars (Excellent)**: XX reviews (XX%)
+- **3-4 Stars (Mixed)**: XX reviews (XX%)
+- **≤3 Stars (Critical)**: XX reviews (XX%)
 
-### 8.4 Data Limitations
+### 9.4 Data Limitations
 - List any platforms where data was unavailable or limited
 - Note any access restrictions encountered
 - Mention if certain date ranges had no data
+
+## SECTION 10: SENTIMENT ANALYSIS (MANDATORY)
+**THIS SECTION IS REQUIRED - Provide comprehensive sentiment analysis:**
+
+### 10.1 Overall Sentiment Score
+Calculate and provide:
+- **Overall Sentiment**: [Positive/Neutral/Negative]
+- **Sentiment Score**: [X.X out of 5.0]
+- **Confidence Level**: [High/Medium/Low based on review volume]
+
+### 10.2 Sentiment Breakdown
+Provide percentage breakdown:
+| Sentiment | Count | Percentage |
+|-----------|-------|------------|
+| Very Positive (Enthusiastic praise, strong recommendations) | XX | XX% |
+| Positive (General satisfaction, would return) | XX | XX% |
+| Neutral (Mixed feelings, balanced feedback) | XX | XX% |
+| Negative (Disappointment, complaints) | XX | XX% |
+| Very Negative (Strong dissatisfaction, warnings to others) | XX | XX% |
+
+### 10.3 Sentiment by Category
+Break down sentiment for each key area:
+- **Product Quality Sentiment**: [Positive/Neutral/Negative] - Brief explanation
+- **Service Quality Sentiment**: [Positive/Neutral/Negative] - Brief explanation
+- **Value for Money Sentiment**: [Positive/Neutral/Negative] - Brief explanation
+- **Atmosphere/Environment Sentiment**: [Positive/Neutral/Negative] - Brief explanation
+- **Convenience/Location Sentiment**: [Positive/Neutral/Negative] - Brief explanation
+
+### 10.4 Sentiment Trends
+- **Improving**: Areas where sentiment has improved over time
+- **Declining**: Areas where sentiment has worsened
+- **Stable**: Areas with consistent sentiment
+
+### 10.5 Key Sentiment Drivers
+- **Top 3 Positive Drivers**: What makes customers happy
+- **Top 3 Negative Drivers**: What frustrates customers
+- **Net Promoter Indicator**: Based on language used (would recommend vs. would not)
 
 ## OUTPUT FORMAT:
 - Be extremely detailed and thorough
@@ -290,11 +345,123 @@ Create a table with the following format:
 - Provide counts/statistics where available
 - Organize clearly by section
 - Include the source platform for each insight
-- **ALWAYS include Section 8 with exact review counts and date ranges**
+- **ALWAYS include Section 9 with exact review counts and date ranges**
+- **ALWAYS include Section 10 with comprehensive sentiment analysis**
 - Flag any data limitations or gaps in available information
 
-Remember: This research will inform critical business decisions. Leave no stone unturned. The review statistics in Section 8 are MANDATORY and must be accurate.
+Remember: This research will inform critical business decisions. Leave no stone unturned. The review statistics in Section 9 and sentiment analysis in Section 10 are MANDATORY and must be accurate.
 """
+
+
+def extract_sentiment_data(report_content: str) -> dict:
+    """Extract sentiment analysis data from the report for UI display."""
+    import re
+
+    sentiment_data = {
+        'overall_sentiment': 'Positive',
+        'sentiment_score': 4.0,
+        'confidence': 'Medium',
+        'breakdown': {
+            'very_positive': {'count': 0, 'percentage': 0},
+            'positive': {'count': 0, 'percentage': 0},
+            'neutral': {'count': 0, 'percentage': 0},
+            'negative': {'count': 0, 'percentage': 0},
+            'very_negative': {'count': 0, 'percentage': 0}
+        },
+        'categories': {
+            'product_quality': 'Positive',
+            'service_quality': 'Positive',
+            'value_for_money': 'Neutral',
+            'atmosphere': 'Positive',
+            'convenience': 'Positive'
+        },
+        'top_positive_drivers': [],
+        'top_negative_drivers': [],
+        'total_reviews': 0
+    }
+
+    try:
+        # Extract overall sentiment
+        overall_match = re.search(r'\*\*Overall Sentiment\*\*:\s*\[?(\w+)', report_content, re.IGNORECASE)
+        if overall_match:
+            sentiment_data['overall_sentiment'] = overall_match.group(1)
+
+        # Extract sentiment score
+        score_match = re.search(r'\*\*Sentiment Score\*\*:\s*\[?(\d+\.?\d*)', report_content, re.IGNORECASE)
+        if score_match:
+            sentiment_data['sentiment_score'] = float(score_match.group(1))
+
+        # Extract confidence level
+        confidence_match = re.search(r'\*\*Confidence Level\*\*:\s*\[?(\w+)', report_content, re.IGNORECASE)
+        if confidence_match:
+            sentiment_data['confidence'] = confidence_match.group(1)
+
+        # Extract total reviews
+        total_match = re.search(r'\*\*Total(?:\s+number\s+of)?\s+reviews?\s+analyzed\*\*:\s*\[?(\d+)', report_content, re.IGNORECASE)
+        if total_match:
+            sentiment_data['total_reviews'] = int(total_match.group(1))
+
+        # Extract sentiment breakdown percentages
+        very_pos_match = re.search(r'Very Positive.*?\|\s*(\d+)\s*\|\s*(\d+)%', report_content, re.IGNORECASE)
+        if very_pos_match:
+            sentiment_data['breakdown']['very_positive'] = {
+                'count': int(very_pos_match.group(1)),
+                'percentage': int(very_pos_match.group(2))
+            }
+
+        pos_match = re.search(r'\|\s*Positive\s*\(General.*?\|\s*(\d+)\s*\|\s*(\d+)%', report_content, re.IGNORECASE)
+        if pos_match:
+            sentiment_data['breakdown']['positive'] = {
+                'count': int(pos_match.group(1)),
+                'percentage': int(pos_match.group(2))
+            }
+
+        neutral_match = re.search(r'Neutral.*?\|\s*(\d+)\s*\|\s*(\d+)%', report_content, re.IGNORECASE)
+        if neutral_match:
+            sentiment_data['breakdown']['neutral'] = {
+                'count': int(neutral_match.group(1)),
+                'percentage': int(neutral_match.group(2))
+            }
+
+        neg_match = re.search(r'\|\s*Negative\s*\(Disappointment.*?\|\s*(\d+)\s*\|\s*(\d+)%', report_content, re.IGNORECASE)
+        if neg_match:
+            sentiment_data['breakdown']['negative'] = {
+                'count': int(neg_match.group(1)),
+                'percentage': int(neg_match.group(2))
+            }
+
+        very_neg_match = re.search(r'Very Negative.*?\|\s*(\d+)\s*\|\s*(\d+)%', report_content, re.IGNORECASE)
+        if very_neg_match:
+            sentiment_data['breakdown']['very_negative'] = {
+                'count': int(very_neg_match.group(1)),
+                'percentage': int(very_neg_match.group(2))
+            }
+
+        # Extract category sentiments
+        prod_match = re.search(r'\*\*Product Quality Sentiment\*\*:\s*\[?(\w+)', report_content, re.IGNORECASE)
+        if prod_match:
+            sentiment_data['categories']['product_quality'] = prod_match.group(1)
+
+        service_match = re.search(r'\*\*Service Quality Sentiment\*\*:\s*\[?(\w+)', report_content, re.IGNORECASE)
+        if service_match:
+            sentiment_data['categories']['service_quality'] = service_match.group(1)
+
+        value_match = re.search(r'\*\*Value for Money Sentiment\*\*:\s*\[?(\w+)', report_content, re.IGNORECASE)
+        if value_match:
+            sentiment_data['categories']['value_for_money'] = value_match.group(1)
+
+        atmosphere_match = re.search(r'\*\*Atmosphere.*?Sentiment\*\*:\s*\[?(\w+)', report_content, re.IGNORECASE)
+        if atmosphere_match:
+            sentiment_data['categories']['atmosphere'] = atmosphere_match.group(1)
+
+        convenience_match = re.search(r'\*\*Convenience.*?Sentiment\*\*:\s*\[?(\w+)', report_content, re.IGNORECASE)
+        if convenience_match:
+            sentiment_data['categories']['convenience'] = convenience_match.group(1)
+
+    except Exception as e:
+        print(f"Error extracting sentiment data: {e}")
+
+    return sentiment_data
 
 
 def generate_word_document(bakery_location: str, report_content: str, output_path: str) -> str:
@@ -325,7 +492,7 @@ def generate_word_document(bakery_location: str, report_content: str, output_pat
 
     meta3 = doc.add_paragraph()
     meta3.add_run('Research Engine: ').bold = True
-    meta3.add_run('Google Deep Research API (Gemini)')
+    meta3.add_run('AI-Powered Deep Analysis')
 
     doc.add_paragraph()
     doc.add_paragraph('_' * 70)
@@ -449,11 +616,15 @@ def run_research(task_id: str, location: str):
 
                     generate_word_document(location, report, str(doc_path))
 
+                    # Extract sentiment data for UI display
+                    sentiment_data = extract_sentiment_data(report)
+
                     update_task(task_id, {
                         'status': 'completed',
                         'report': report,
                         'report_length': len(report),
-                        'document_path': str(doc_path)
+                        'document_path': str(doc_path),
+                        'sentiment': sentiment_data
                     })
                 else:
                     update_task(task_id, {
@@ -554,6 +725,7 @@ def get_research_status(task_id):
     if task['status'] == 'completed':
         response['report_length'] = task.get('report_length', 0)
         response['document_path'] = task.get('document_path')
+        response['sentiment'] = task.get('sentiment', {})
 
     if task['status'] == 'failed':
         response['error'] = task.get('error', 'Unknown error')

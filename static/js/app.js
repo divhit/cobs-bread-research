@@ -21,10 +21,16 @@ class COBSResearchApp {
 
         this.statLength = document.getElementById('stat-length');
         this.statTime = document.getElementById('stat-time');
+        this.statReviews = document.getElementById('stat-reviews');
         this.downloadBtn = document.getElementById('download-btn');
         this.newResearchBtn = document.getElementById('new-research-btn');
         this.retryBtn = document.getElementById('retry-btn');
         this.errorMessage = document.getElementById('error-message');
+
+        // Sentiment analysis elements
+        this.sentimentScore = document.getElementById('sentiment-score');
+        this.sentimentBadge = document.getElementById('sentiment-badge');
+        this.sentimentConfidence = document.getElementById('sentiment-confidence');
 
         this.platformTags = document.querySelectorAll('.platform-tag');
 
@@ -200,8 +206,83 @@ class COBSResearchApp {
         this.statLength.textContent = data.report_length ? data.report_length.toLocaleString() : '-';
         this.statTime.textContent = elapsed || '<1';
 
+        // Update sentiment analysis UI
+        this.updateSentimentUI(data.sentiment);
+
         this.downloadBtn.href = `/api/download/${this.taskId}`;
         this.progressBar.style.width = '100%';
+    }
+
+    updateSentimentUI(sentiment) {
+        if (!sentiment) {
+            // Hide sentiment section if no data
+            const sentimentSection = document.getElementById('sentiment-section');
+            if (sentimentSection) sentimentSection.classList.add('hidden');
+            return;
+        }
+
+        // Show sentiment section
+        const sentimentSection = document.getElementById('sentiment-section');
+        if (sentimentSection) sentimentSection.classList.remove('hidden');
+
+        // Update total reviews
+        if (this.statReviews && sentiment.total_reviews) {
+            this.statReviews.textContent = sentiment.total_reviews.toLocaleString();
+        }
+
+        // Update overall sentiment score
+        if (this.sentimentScore) {
+            this.sentimentScore.textContent = sentiment.sentiment_score?.toFixed(1) || '4.0';
+        }
+
+        // Update sentiment badge
+        if (this.sentimentBadge) {
+            const overallSentiment = sentiment.overall_sentiment || 'Positive';
+            this.sentimentBadge.textContent = overallSentiment;
+            this.sentimentBadge.className = 'sentiment-badge ' + overallSentiment.toLowerCase();
+        }
+
+        // Update confidence
+        if (this.sentimentConfidence) {
+            this.sentimentConfidence.textContent = sentiment.confidence || 'Medium';
+        }
+
+        // Update sentiment breakdown bars
+        const breakdown = sentiment.breakdown || {};
+        this.updateSentimentBar('very-positive', breakdown.very_positive);
+        this.updateSentimentBar('positive', breakdown.positive);
+        this.updateSentimentBar('neutral', breakdown.neutral);
+        this.updateSentimentBar('negative', breakdown.negative);
+        this.updateSentimentBar('very-negative', breakdown.very_negative);
+
+        // Update category sentiments
+        const categories = sentiment.categories || {};
+        this.updateCategorySentiment('cat-product', categories.product_quality);
+        this.updateCategorySentiment('cat-service', categories.service_quality);
+        this.updateCategorySentiment('cat-value', categories.value_for_money);
+        this.updateCategorySentiment('cat-atmosphere', categories.atmosphere);
+        this.updateCategorySentiment('cat-convenience', categories.convenience);
+    }
+
+    updateSentimentBar(type, data) {
+        const bar = document.getElementById(`bar-${type}`);
+        const pct = document.getElementById(`pct-${type}`);
+
+        if (bar && data) {
+            const percentage = data.percentage || 0;
+            bar.style.width = `${percentage}%`;
+        }
+        if (pct && data) {
+            pct.textContent = `${data.percentage || 0}%`;
+        }
+    }
+
+    updateCategorySentiment(elementId, sentiment) {
+        const el = document.getElementById(elementId);
+        if (el && sentiment) {
+            el.textContent = sentiment;
+            el.className = 'category-sentiment ' + sentiment.toLowerCase();
+        }
     }
 
     showError(message) {

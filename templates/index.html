@@ -31,7 +31,7 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content">
-                <div class="hero-badge">Powered by Google Deep Research</div>
+                <div class="hero-badge">AI-Powered Deep Analysis</div>
                 <h1>
                     <span class="hero-line-1">Uncover Every</span>
                     <span class="hero-line-2"><em>Customer Insight</em></span>
@@ -107,7 +107,7 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-rating four">★★★★☆</div>
-                    <h3>4-Star Analysis</h3>
+                    <h3>4-5 Star Analysis</h3>
                     <ul>
                         <li>What's holding back perfection</li>
                         <li>Franchisor operational insights</li>
@@ -117,10 +117,10 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-rating low">★★★☆☆</div>
-                    <h3>Critical Analysis</h3>
+                    <h3>3-4 Star & Critical</h3>
                     <ul>
-                        <li>Problematic products identified</li>
-                        <li>Service failure patterns</li>
+                        <li>Mixed experience patterns</li>
+                        <li>Service failure analysis</li>
                         <li>Value perception issues</li>
                         <li>Severity & trend assessment</li>
                     </ul>
@@ -228,6 +228,94 @@
                             <span class="stat-value" id="stat-time">-</span>
                             <span class="stat-label">Minutes</span>
                         </div>
+                        <div class="stat">
+                            <span class="stat-value" id="stat-reviews">-</span>
+                            <span class="stat-label">Reviews</span>
+                        </div>
+                    </div>
+
+                    <!-- Sentiment Analysis Section -->
+                    <div class="sentiment-section" id="sentiment-section">
+                        <h4 class="sentiment-title">Sentiment Analysis</h4>
+
+                        <div class="sentiment-overview">
+                            <div class="sentiment-score-card">
+                                <div class="sentiment-score" id="sentiment-score">4.0</div>
+                                <div class="sentiment-label">out of 5.0</div>
+                                <div class="sentiment-badge" id="sentiment-badge">Positive</div>
+                            </div>
+                            <div class="sentiment-confidence">
+                                <span class="confidence-label">Confidence:</span>
+                                <span class="confidence-value" id="sentiment-confidence">Medium</span>
+                            </div>
+                        </div>
+
+                        <div class="sentiment-breakdown">
+                            <h5>Sentiment Distribution</h5>
+                            <div class="sentiment-bars">
+                                <div class="sentiment-bar-row">
+                                    <span class="bar-label">Very Positive</span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-very-positive" id="bar-very-positive" style="width: 0%"></div>
+                                    </div>
+                                    <span class="bar-value" id="pct-very-positive">0%</span>
+                                </div>
+                                <div class="sentiment-bar-row">
+                                    <span class="bar-label">Positive</span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-positive" id="bar-positive" style="width: 0%"></div>
+                                    </div>
+                                    <span class="bar-value" id="pct-positive">0%</span>
+                                </div>
+                                <div class="sentiment-bar-row">
+                                    <span class="bar-label">Neutral</span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-neutral" id="bar-neutral" style="width: 0%"></div>
+                                    </div>
+                                    <span class="bar-value" id="pct-neutral">0%</span>
+                                </div>
+                                <div class="sentiment-bar-row">
+                                    <span class="bar-label">Negative</span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-negative" id="bar-negative" style="width: 0%"></div>
+                                    </div>
+                                    <span class="bar-value" id="pct-negative">0%</span>
+                                </div>
+                                <div class="sentiment-bar-row">
+                                    <span class="bar-label">Very Negative</span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-very-negative" id="bar-very-negative" style="width: 0%"></div>
+                                    </div>
+                                    <span class="bar-value" id="pct-very-negative">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sentiment-categories">
+                            <h5>Sentiment by Category</h5>
+                            <div class="category-grid">
+                                <div class="category-item">
+                                    <span class="category-name">Product Quality</span>
+                                    <span class="category-sentiment positive" id="cat-product">Positive</span>
+                                </div>
+                                <div class="category-item">
+                                    <span class="category-name">Service Quality</span>
+                                    <span class="category-sentiment positive" id="cat-service">Positive</span>
+                                </div>
+                                <div class="category-item">
+                                    <span class="category-name">Value for Money</span>
+                                    <span class="category-sentiment neutral" id="cat-value">Neutral</span>
+                                </div>
+                                <div class="category-item">
+                                    <span class="category-name">Atmosphere</span>
+                                    <span class="category-sentiment positive" id="cat-atmosphere">Positive</span>
+                                </div>
+                                <div class="category-item">
+                                    <span class="category-name">Convenience</span>
+                                    <span class="category-sentiment positive" id="cat-convenience">Positive</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <a href="#" id="download-btn" class="download-button">
@@ -270,9 +358,6 @@
             </div>
             <p class="footer-disclaimer">
                 This tool analyzes publicly available reviews. All insights should be verified independently.
-            </p>
-            <p class="footer-powered">
-                Powered by Google Deep Research API (Gemini)
             </p>
         </div>
     </footer>
