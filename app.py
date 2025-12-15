@@ -79,10 +79,13 @@ def create_task(task_id, task_data):
 
 def build_research_prompt(bakery_location: str) -> str:
     """Build comprehensive research prompt for COBS Bread bakery analysis."""
+    today = datetime.now().strftime('%B %d, %Y')
     return f"""
 You are conducting an exhaustive deep research analysis of customer reviews for the COBS Bread bakery located at: {bakery_location}
 
-Your task is to find and analyze ALL available reviews across EVERY social media platform and review site. Be extremely thorough and comprehensive.
+**TODAY'S DATE: {today}**
+
+Your task is to find and analyze ALL available reviews across EVERY social media platform and review site. Be extremely thorough and comprehensive. Search for the most recent reviews up to today's date.
 
 ## PLATFORMS TO SEARCH (search ALL of these):
 - Google Reviews / Google Maps
@@ -242,16 +245,55 @@ Provide specific, actionable recommendations for:
 4. Marketing opportunities
 5. Competitive positioning strategies
 
+## SECTION 8: REVIEW STATISTICS & DATA SOURCES (MANDATORY)
+**THIS SECTION IS REQUIRED - You MUST include this exact breakdown:**
+
+### 8.1 Total Reviews Analyzed
+- **Total number of reviews analyzed**: [exact count]
+- **Date range of reviews**: [earliest review date] to {today}
+
+### 8.2 Reviews by Platform (provide exact counts)
+Create a table with the following format:
+| Platform | # of Reviews | Date Range | Average Rating |
+|----------|--------------|------------|----------------|
+| Google Reviews | XX | MM/YYYY - MM/YYYY | X.X |
+| Yelp | XX | MM/YYYY - MM/YYYY | X.X |
+| Facebook | XX | MM/YYYY - MM/YYYY | X.X |
+| Instagram | XX mentions | MM/YYYY - MM/YYYY | N/A |
+| TripAdvisor | XX | MM/YYYY - MM/YYYY | X.X |
+| Reddit | XX mentions | MM/YYYY - MM/YYYY | N/A |
+| Twitter/X | XX mentions | MM/YYYY - MM/YYYY | N/A |
+| TikTok | XX mentions | MM/YYYY - MM/YYYY | N/A |
+| DoorDash | XX | MM/YYYY - MM/YYYY | X.X |
+| UberEats | XX | MM/YYYY - MM/YYYY | X.X |
+| Skip The Dishes | XX | MM/YYYY - MM/YYYY | X.X |
+| YouTube | XX | MM/YYYY - MM/YYYY | N/A |
+| Local Blogs | XX | MM/YYYY - MM/YYYY | N/A |
+| Other Sources | XX | MM/YYYY - MM/YYYY | N/A |
+| **TOTAL** | **XXX** | | |
+
+### 8.3 Rating Distribution (across all platforms)
+- 5-star reviews: XX (XX%)
+- 4-star reviews: XX (XX%)
+- 3-star reviews: XX (XX%)
+- 2-star reviews: XX (XX%)
+- 1-star reviews: XX (XX%)
+
+### 8.4 Data Limitations
+- List any platforms where data was unavailable or limited
+- Note any access restrictions encountered
+- Mention if certain date ranges had no data
+
 ## OUTPUT FORMAT:
 - Be extremely detailed and thorough
 - Include specific quotes from reviews where possible
 - Provide counts/statistics where available
 - Organize clearly by section
 - Include the source platform for each insight
-- Note the approximate date range of reviews analyzed
+- **ALWAYS include Section 8 with exact review counts and date ranges**
 - Flag any data limitations or gaps in available information
 
-Remember: This research will inform critical business decisions. Leave no stone unturned.
+Remember: This research will inform critical business decisions. Leave no stone unturned. The review statistics in Section 8 are MANDATORY and must be accurate.
 """
 
 
