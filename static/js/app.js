@@ -32,6 +32,8 @@ class COBSResearchApp {
         this.pollInterval = null;
         this.startTime = null;
         this.elapsedInterval = null;
+        this.pollErrorCount = 0;
+        this.maxPollErrors = 3;
 
         this.init();
     }
@@ -50,6 +52,7 @@ class COBSResearchApp {
 
         this.setLoading(true);
         this.hideAllSections();
+        this.pollErrorCount = 0;
 
         try {
             const response = await fetch('/api/research', {
@@ -108,7 +111,10 @@ class COBSResearchApp {
     }
 
     startPolling() {
-        this.pollInterval = setInterval(() => this.checkStatus(), 3000);
+        // Poll every 5 seconds
+        this.pollInterval = setInterval(() => this.checkStatus(), 5000);
+        // Also check immediately
+        this.checkStatus();
     }
 
     stopPolling() {
@@ -123,13 +129,29 @@ class COBSResearchApp {
     }
 
     async checkStatus() {
+        if (!this.taskId) return;
+
         try {
             const response = await fetch(`/api/research/${this.taskId}`);
             const data = await response.json();
 
             if (!response.ok) {
+                // Handle task not found - stop polling
+                if (response.status === 404) {
+                    this.pollErrorCount++;
+                    if (this.pollErrorCount >= this.maxPollErrors) {
+                        this.stopPolling();
+                        this.showError('Task not found. The research may have been interrupted. Please try again.');
+                        return;
+                    }
+                    console.warn(`Task not found (attempt ${this.pollErrorCount}/${this.maxPollErrors})`);
+                    return;
+                }
                 throw new Error(data.error || 'Failed to check status');
             }
+
+            // Reset error count on successful response
+            this.pollErrorCount = 0;
 
             this.updateProgressUI(data);
 
@@ -143,6 +165,11 @@ class COBSResearchApp {
 
         } catch (error) {
             console.error('Polling error:', error);
+            this.pollErrorCount++;
+            if (this.pollErrorCount >= this.maxPollErrors) {
+                this.stopPolling();
+                this.showError('Connection lost. Please check your internet connection and try again.');
+            }
         }
     }
 
@@ -171,7 +198,7 @@ class COBSResearchApp {
 
         const elapsed = Math.floor((Date.now() - this.startTime) / 1000 / 60);
         this.statLength.textContent = data.report_length ? data.report_length.toLocaleString() : '-';
-        this.statTime.textContent = elapsed || '-';
+        this.statTime.textContent = elapsed || '<1';
 
         this.downloadBtn.href = `/api/download/${this.taskId}`;
         this.progressBar.style.width = '100%';
@@ -198,6 +225,7 @@ class COBSResearchApp {
         this.progressBar.style.width = '0%';
         this.taskId = null;
         this.startTime = null;
+        this.pollErrorCount = 0;
         this.form.scrollIntoView({ behavior: 'smooth' });
     }
 

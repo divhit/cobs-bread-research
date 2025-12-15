@@ -7,12 +7,13 @@ Provides a web interface for the deep research tool.
 import os
 import time
 import uuid
+import json
 import threading
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, Response
 from dotenv import load_dotenv
 from google import genai
 from docx import Document
@@ -25,11 +26,55 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
-# In-memory task storage (use Redis/database in production)
-tasks = {}
+# File-based task storage for persistence across restarts
+TASKS_FILE = Path('tasks.json')
+OUTPUTS_DIR = Path('outputs')
 
 # Google Deep Research agent ID
 AGENT_ID = "deep-research-pro-preview-12-2025"
+
+
+def load_tasks():
+    """Load tasks from file."""
+    if TASKS_FILE.exists():
+        try:
+            with open(TASKS_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+
+def save_tasks(tasks):
+    """Save tasks to file."""
+    try:
+        with open(TASKS_FILE, 'w') as f:
+            json.dump(tasks, f, indent=2)
+    except Exception as e:
+        print(f"Error saving tasks: {e}")
+
+
+def get_task(task_id):
+    """Get a specific task."""
+    tasks = load_tasks()
+    return tasks.get(task_id)
+
+
+def update_task(task_id, updates):
+    """Update a specific task."""
+    tasks = load_tasks()
+    if task_id in tasks:
+        tasks[task_id].update(updates)
+        save_tasks(tasks)
+    return tasks.get(task_id)
+
+
+def create_task(task_id, task_data):
+    """Create a new task."""
+    tasks = load_tasks()
+    tasks[task_id] = task_data
+    save_tasks(tasks)
+    return task_data
 
 
 def build_research_prompt(bakery_location: str) -> str:
@@ -318,7 +363,7 @@ def add_formatted_content(doc: Document, content: str):
 def run_research(task_id: str, location: str):
     """Background task to run the research."""
     try:
-        tasks[task_id]['status'] = 'running'
+        update_task(task_id, {'status': 'running'})
 
         # Initialize the Google client
         client = genai.Client()
@@ -331,7 +376,7 @@ def run_research(task_id: str, location: str):
             background=True
         )
 
-        tasks[task_id]['interaction_id'] = interaction.id
+        update_task(task_id, {'interaction_id': interaction.id})
 
         # Poll for results
         max_poll_time = 3600  # 60 minutes
@@ -342,8 +387,10 @@ def run_research(task_id: str, location: str):
             elapsed = time.time() - start_time
 
             if elapsed > max_poll_time:
-                tasks[task_id]['status'] = 'failed'
-                tasks[task_id]['error'] = 'Research exceeded maximum time limit'
+                update_task(task_id, {
+                    'status': 'failed',
+                    'error': 'Research exceeded maximum time limit'
+                })
                 return
 
             interaction = client.interactions.get(interaction.id)
@@ -351,34 +398,42 @@ def run_research(task_id: str, location: str):
             if interaction.status == "completed":
                 if interaction.outputs:
                     report = interaction.outputs[-1].text
-                    tasks[task_id]['report'] = report
-                    tasks[task_id]['report_length'] = len(report)
 
                     # Generate Word document
-                    output_dir = Path('outputs')
-                    output_dir.mkdir(exist_ok=True)
+                    OUTPUTS_DIR.mkdir(exist_ok=True)
                     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                     safe_location = "".join(c if c.isalnum() or c in ' -_' else '_' for c in location)[:50]
-                    doc_path = output_dir / f"COBS_Research_{safe_location}_{timestamp}.docx"
+                    doc_path = OUTPUTS_DIR / f"COBS_Research_{safe_location}_{timestamp}.docx"
 
                     generate_word_document(location, report, str(doc_path))
-                    tasks[task_id]['document_path'] = str(doc_path)
-                    tasks[task_id]['status'] = 'completed'
+
+                    update_task(task_id, {
+                        'status': 'completed',
+                        'report': report,
+                        'report_length': len(report),
+                        'document_path': str(doc_path)
+                    })
                 else:
-                    tasks[task_id]['status'] = 'failed'
-                    tasks[task_id]['error'] = 'Research completed but no output received'
+                    update_task(task_id, {
+                        'status': 'failed',
+                        'error': 'Research completed but no output received'
+                    })
                 return
 
             elif interaction.status == "failed":
-                tasks[task_id]['status'] = 'failed'
-                tasks[task_id]['error'] = getattr(interaction, 'error', 'Unknown error')
+                update_task(task_id, {
+                    'status': 'failed',
+                    'error': getattr(interaction, 'error', 'Unknown error')
+                })
                 return
 
             time.sleep(poll_interval)
 
     except Exception as e:
-        tasks[task_id]['status'] = 'failed'
-        tasks[task_id]['error'] = str(e)
+        update_task(task_id, {
+            'status': 'failed',
+            'error': str(e)
+        })
 
 
 # Routes
@@ -386,6 +441,20 @@ def run_research(task_id: str, location: str):
 def index():
     """Serve the main page."""
     return render_template('index.html')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon - COBS brand color bread icon."""
+    # SVG favicon with COBS brand color
+    svg = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+        <circle cx="16" cy="16" r="15" fill="#862633"/>
+        <ellipse cx="16" cy="16" rx="10" ry="7" fill="#D4A574"/>
+        <ellipse cx="16" cy="14" rx="8" ry="5" fill="#E8CDB0"/>
+        <path d="M10 16 Q16 12 22 16" stroke="#862633" stroke-width="1" fill="none"/>
+        <path d="M12 15 Q16 11 20 15" stroke="#862633" stroke-width="0.5" fill="none"/>
+    </svg>'''
+    return Response(svg, mimetype='image/svg+xml')
 
 
 @app.route('/api/research', methods=['POST'])
@@ -399,11 +468,11 @@ def start_research():
 
     # Check for API key
     if not os.environ.get('GOOGLE_API_KEY'):
-        return jsonify({'error': 'Google API key not configured'}), 500
+        return jsonify({'error': 'Google API key not configured. Please add GOOGLE_API_KEY environment variable.'}), 500
 
     # Create task
     task_id = str(uuid.uuid4())
-    tasks[task_id] = {
+    task_data = {
         'id': task_id,
         'location': location,
         'status': 'pending',
@@ -412,6 +481,7 @@ def start_research():
         'document_path': None,
         'error': None
     }
+    create_task(task_id, task_data)
 
     # Start background task
     thread = threading.Thread(target=run_research, args=(task_id, location))
@@ -428,10 +498,10 @@ def start_research():
 @app.route('/api/research/<task_id>')
 def get_research_status(task_id):
     """Get the status of a research task."""
-    task = tasks.get(task_id)
+    task = get_task(task_id)
 
     if not task:
-        return jsonify({'error': 'Task not found'}), 404
+        return jsonify({'error': 'Task not found. The task may have expired or the server was restarted.'}), 404
 
     response = {
         'task_id': task_id,
@@ -452,7 +522,7 @@ def get_research_status(task_id):
 @app.route('/api/download/<task_id>')
 def download_document(task_id):
     """Download the generated Word document."""
-    task = tasks.get(task_id)
+    task = get_task(task_id)
 
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -480,7 +550,7 @@ def health():
 
 if __name__ == '__main__':
     # Create outputs directory
-    Path('outputs').mkdir(exist_ok=True)
+    OUTPUTS_DIR.mkdir(exist_ok=True)
 
     # Run the app
     port = int(os.environ.get('PORT', 5000))
