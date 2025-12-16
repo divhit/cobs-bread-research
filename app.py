@@ -9,6 +9,7 @@ import time
 import uuid
 import json
 import threading
+import requests
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -32,6 +33,166 @@ OUTPUTS_DIR = Path('outputs')
 
 # Google Deep Research agent ID
 AGENT_ID = "deep-research-pro-preview-12-2025"
+
+# Model for Google Search grounding (Gemini 2.x)
+GROUNDING_MODEL = "gemini-2.5-flash"
+
+
+# =============================================================================
+# PREFETCH FUNCTIONS - Get verified data before Deep Research
+# =============================================================================
+
+def find_place_id(query: str) -> str:
+    """Find Google Place ID using Places API Text Search."""
+    api_key = os.environ.get('GOOGLE_PLACES_API_KEY')
+    if not api_key:
+        return None
+
+    url = "https://places.googleapis.com/v1/places:searchText"
+    headers = {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": api_key,
+        "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress"
+    }
+    payload = {"textQuery": query}
+
+    try:
+        response = requests.post(url, json=payload, headers=headers, timeout=30)
+        if response.status_code == 200:
+            data = response.json()
+            places = data.get("places", [])
+            if places:
+                return places[0].get('id')
+    except Exception as e:
+        print(f"Error finding place ID: {e}")
+
+    return None
+
+
+def fetch_google_reviews(location: str) -> dict:
+    """
+    Fetch the 5 most recent Google reviews using Places API (Legacy).
+    Legacy API supports reviews_sort=newest parameter.
+    """
+    api_key = os.environ.get('GOOGLE_PLACES_API_KEY')
+    if not api_key:
+        return {'success': False, 'error': 'No Places API key'}
+
+    # Step 1: Find Place ID
+    place_id = find_place_id(f"COBS Bread {location}")
+    if not place_id:
+        return {'success': False, 'error': 'Could not find place'}
+
+    # Step 2: Fetch reviews using Legacy API (supports newest sorting)
+    url = "https://maps.googleapis.com/maps/api/place/details/json"
+    params = {
+        "place_id": place_id,
+        "fields": "name,formatted_address,formatted_phone_number,rating,user_ratings_total,opening_hours,reviews",
+        "reviews_sort": "newest",
+        "key": api_key
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=30)
+        if response.status_code != 200:
+            return {'success': False, 'error': f'API error: {response.status_code}'}
+
+        data = response.json()
+        if data.get("status") != "OK":
+            return {'success': False, 'error': data.get('status')}
+
+        result = data.get("result", {})
+        reviews = result.get("reviews", [])
+
+        # Format reviews for the prompt
+        formatted_reviews = []
+        for r in reviews:
+            formatted_reviews.append({
+                'author': r.get('author_name', 'Anonymous'),
+                'rating': r.get('rating', 'N/A'),
+                'time': r.get('relative_time_description', 'Unknown'),
+                'text': r.get('text', '')
+            })
+
+        return {
+            'success': True,
+            'business_name': result.get('name', 'COBS Bread'),
+            'address': result.get('formatted_address', ''),
+            'phone': result.get('formatted_phone_number', ''),
+            'rating': result.get('rating', 'N/A'),
+            'total_reviews': result.get('user_ratings_total', 0),
+            'reviews': formatted_reviews,
+            'place_id': place_id
+        }
+
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+
+def fetch_search_grounding_insights(location: str) -> dict:
+    """
+    Fetch review insights using Gemini Google Search grounding.
+    Searches across Yelp, TripAdvisor, Reddit, UberEats, etc.
+    """
+    api_key = os.environ.get('GOOGLE_API_KEY')
+    if not api_key:
+        return {'success': False, 'error': 'No Gemini API key'}
+
+    prompt = f"""
+Search the web for reviews and feedback SPECIFICALLY about the COBS Bread bakery location in {location}.
+
+IMPORTANT: Only include reviews and discussions that specifically mention this {location} location.
+Do NOT include general COBS Bread reviews or reviews from other COBS Bread locations.
+
+Search these platforms for this specific location:
+- Yelp reviews for "COBS Bread {location}"
+- TripAdvisor reviews for "COBS Bread {location}"
+- UberEats/DoorDash reviews for "COBS Bread {location}"
+- Reddit discussions mentioning "COBS Bread" AND "{location}"
+- RedFlagDeals discussions mentioning "COBS Bread" AND "{location}"
+- Local food blogs reviewing this specific {location} bakery
+
+For each review or mention found, provide:
+1. The platform/source name
+2. The specific rating or sentiment
+3. What the customer said (quote if possible)
+4. Date if available
+
+If you cannot find location-specific reviews for a platform, state "No {location}-specific reviews found on [platform]" rather than providing general COBS Bread feedback.
+
+Focus on quality over quantity - only verified {location}-specific feedback.
+"""
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GROUNDING_MODEL}:generateContent?key={api_key}"
+    payload = {
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "tools": [{"googleSearch": {}}]
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=90)
+        if response.status_code != 200:
+            return {'success': False, 'error': f'API error: {response.status_code}'}
+
+        data = response.json()
+        text = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+
+        # Extract sources
+        grounding = data.get("candidates", [{}])[0].get("groundingMetadata", {})
+        sources = []
+        for chunk in grounding.get("groundingChunks", []):
+            web_data = chunk.get("web", {})
+            if web_data:
+                sources.append(web_data.get('title', ''))
+
+        return {
+            'success': True,
+            'insights': text,
+            'sources': sources
+        }
+
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
 
 
 def load_tasks():
@@ -77,12 +238,61 @@ def create_task(task_id, task_data):
     return task_data
 
 
-def build_research_prompt(bakery_location: str) -> str:
+def build_research_prompt(bakery_location: str, google_reviews: dict = None, search_insights: dict = None) -> str:
     """Build comprehensive research prompt for COBS Bread bakery analysis."""
     today = datetime.now().strftime('%B %d, %Y')
+
+    # Build prefetched data section
+    prefetch_section = ""
+
+    # Add Google Reviews if available
+    if google_reviews and google_reviews.get('success'):
+        reviews_text = ""
+        for r in google_reviews.get('reviews', []):
+            reviews_text += f"\n- **{r['author']}** ({r['time']}) - {r['rating']}/5 stars:\n  \"{r['text']}\"\n"
+
+        prefetch_section += f"""
+## VERIFIED GOOGLE REVIEWS DATA (from Google Places API)
+**Business:** {google_reviews.get('business_name', 'COBS Bread')}
+**Address:** {google_reviews.get('address', 'N/A')}
+**Phone:** {google_reviews.get('phone', 'N/A')}
+**Google Rating:** {google_reviews.get('rating', 'N/A')}/5 ({google_reviews.get('total_reviews', 0)} total reviews)
+
+### 5 Most Recent Google Reviews (sorted by date):
+{reviews_text}
+---
+"""
+
+    # Add Search Grounding insights if available
+    if search_insights and search_insights.get('success'):
+        prefetch_section += f"""
+## MULTI-PLATFORM REVIEW INSIGHTS (from Google Search Grounding)
+The following insights were gathered from web search across multiple platforms:
+
+{search_insights.get('insights', '')}
+
+**Sources searched:** {', '.join(search_insights.get('sources', [])[:10])}
+---
+"""
+
+    # Add instruction if prefetch data exists
+    if prefetch_section:
+        prefetch_section = f"""
+# PRE-FETCHED VERIFIED DATA
+The following data has been verified and grounded from official APIs and web search.
+Use this as your foundation and expand upon it with additional deep research.
+
+{prefetch_section}
+
+# NOW CONDUCT ADDITIONAL DEEP RESEARCH
+Expand on the above verified data by searching for more reviews and insights.
+---
+
+"""
+
     return f"""
 You are conducting an exhaustive deep research analysis of customer reviews for the COBS Bread bakery located at: {bakery_location}
-
+{prefetch_section}
 **TODAY'S DATE: {today}**
 
 Your task is to find and analyze ALL available reviews across EVERY social media platform and review site. Be extremely thorough and comprehensive. Search for the most recent reviews up to today's date.
@@ -572,13 +782,51 @@ def add_formatted_content(doc: Document, content: str):
 def run_research(task_id: str, location: str):
     """Background task to run the research."""
     try:
-        update_task(task_id, {'status': 'running'})
+        update_task(task_id, {'status': 'running', 'stage': 'prefetch_reviews'})
+
+        # =================================================================
+        # STAGE 1: Prefetch Google Reviews (5 most recent)
+        # =================================================================
+        print(f"[{task_id}] Stage 1: Fetching Google Reviews...")
+        google_reviews = fetch_google_reviews(location)
+
+        if google_reviews.get('success'):
+            print(f"[{task_id}] Got {len(google_reviews.get('reviews', []))} Google reviews")
+            update_task(task_id, {
+                'stage': 'prefetch_search',
+                'google_reviews_count': len(google_reviews.get('reviews', [])),
+                'google_rating': google_reviews.get('rating')
+            })
+        else:
+            print(f"[{task_id}] Google Reviews fetch failed: {google_reviews.get('error')}")
+            update_task(task_id, {'stage': 'prefetch_search', 'google_reviews_error': google_reviews.get('error')})
+
+        # =================================================================
+        # STAGE 2: Prefetch Search Grounding Insights (multi-platform)
+        # =================================================================
+        print(f"[{task_id}] Stage 2: Fetching Search Grounding insights...")
+        search_insights = fetch_search_grounding_insights(location)
+
+        if search_insights.get('success'):
+            print(f"[{task_id}] Got search insights from {len(search_insights.get('sources', []))} sources")
+            update_task(task_id, {
+                'stage': 'deep_research',
+                'search_sources_count': len(search_insights.get('sources', []))
+            })
+        else:
+            print(f"[{task_id}] Search Grounding failed: {search_insights.get('error')}")
+            update_task(task_id, {'stage': 'deep_research', 'search_error': search_insights.get('error')})
+
+        # =================================================================
+        # STAGE 3: Run Deep Research with prefetched data
+        # =================================================================
+        print(f"[{task_id}] Stage 3: Starting Deep Research...")
 
         # Initialize the Google client
         client = genai.Client()
 
-        # Create the research interaction
-        prompt = build_research_prompt(location)
+        # Create the research interaction with prefetched data
+        prompt = build_research_prompt(location, google_reviews, search_insights)
         interaction = client.interactions.create(
             input=prompt,
             agent=AGENT_ID,
