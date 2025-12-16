@@ -295,6 +295,28 @@ You are conducting an exhaustive deep research analysis of customer reviews for 
 {prefetch_section}
 **TODAY'S DATE: {today}**
 
+## CRITICAL REQUIREMENTS - READ CAREFULLY:
+
+**ONLY ACTUAL REVIEWS ALLOWED:**
+1. ONLY include reviews, quotes, and data that you can directly source and verify
+2. NEVER infer, estimate, guess, or imply reviews or sentiments
+3. NEVER use language like "inferred," "estimated," "implied," "likely," or "typical"
+4. If a section has no actual reviews found, write "No verified reviews found for this category"
+5. All statistics MUST be exact counts from actual found reviews - NO estimates or projections
+6. Every insight MUST have a direct quote or specific reference from an actual review
+7. Do NOT include competitive analysis unless a competitor is specifically mentioned in an actual review
+8. Do NOT extrapolate or generalize from reviews at other COBS locations
+
+**QUOTE REQUIREMENTS:**
+- Every claim must be backed by a direct quote from an actual review
+- Include the reviewer's name/username, platform, date, and rating for each quote
+- If you cannot find the exact quote, do not include the insight
+
+**DATA INTEGRITY:**
+- Rating distributions must only count actual reviews found - NO estimates
+- If a platform has 0 reviews, show 0 - do not estimate or project
+- Do not "fill in" sections with general brand knowledge if no specific reviews exist
+
 Your task is to find and analyze ALL available reviews across EVERY social media platform and review site. Be extremely thorough and comprehensive. Search for the most recent reviews up to today's date.
 
 ## PLATFORMS TO SEARCH (search ALL of these):
@@ -355,41 +377,19 @@ For every 5-star review found, extract and analyze:
    - Quality-to-price ratio comments
    - Deals and promotions mentioned
 
-### SECTION 2: 4-5 STAR REVIEWS (Excellent but not perfect - Balanced Analysis)
-For reviews rated between 4 and 5 stars (excluding exact 5-star), analyze from DUAL PERSPECTIVES:
+### SECTION 2: 4-STAR REVIEWS (Excellent but not perfect - Actual Reviews Only)
+For reviews rated exactly 4 stars, analyze ONLY actual quotes found:
 
-**A) Customer/Reviewer Perspective**:
-1. **What They Loved**:
-   - Specific products praised
-   - Positive experiences
-   - Strengths identified
+**IMPORTANT: If no 4-star reviews are found, state "No 4-star reviews found for this location" and skip this section.**
 
-2. **What Held Back 5 Stars**:
-   - Specific criticisms
-   - Products that disappointed
-   - Service issues
-   - Suggestions for improvement
+For each 4-star review found, include:
+1. **Reviewer name, platform, date**
+2. **Direct quote from the review**
+3. **What they praised** (from the actual review text)
+4. **What they criticized** (from the actual review text)
+5. **Any specific products mentioned** (positive or negative)
 
-3. **Conditional Recommendations**:
-   - "Great for X but not for Y" statements
-   - Situational preferences
-
-**B) COBS Bread Franchisor Perspective**:
-1. **Operational Insights**:
-   - Consistency issues flagged
-   - Training opportunities identified
-   - Product quality variations
-   - Peak time challenges
-
-2. **Competitive Intelligence**:
-   - Comparisons to competitors
-   - Market positioning feedback
-   - Pricing perception
-
-3. **Growth Opportunities**:
-   - Unmet customer needs
-   - Product suggestions
-   - Service improvements needed
+Do NOT infer or estimate what "might have" held back 5 stars. Only include explicit statements from actual reviews.
 
 ### SECTION 3: 3-4 STAR REVIEWS (Mixed Experience - Improvement Opportunities)
 For reviews rated between 3 and 4 stars, analyze:
@@ -445,12 +445,17 @@ For every review rated 3 stars or lower, deeply analyze:
    - Seasonal patterns in complaints
    - Response from bakery (if any)
 
-### SECTION 5: COMPETITIVE LANDSCAPE
-- How does this COBS location compare to:
-  - Other COBS Bread locations nearby
-  - Local independent bakeries
-  - Chain competitors (Tim Hortons, Panera, etc.)
-  - Grocery store bakeries
+### SECTION 5: COMPETITIVE MENTIONS (From Actual Reviews Only)
+**IMPORTANT: Only include competitor mentions that appear in actual reviews for THIS location.**
+
+If reviewers explicitly compare this COBS to other bakeries, include:
+- The exact quote mentioning the competitor
+- Reviewer name, platform, date
+- Whether the comparison was favorable or unfavorable
+
+**If no reviews mention competitors, write: "No competitor comparisons found in reviews for this location."**
+
+Do NOT add general competitive analysis or market positioning unless it comes from actual customer reviews.
 
 ### SECTION 6: TREND ANALYSIS
 - Review sentiment over time
@@ -459,11 +464,19 @@ For every review rated 3 stars or lower, deeply analyze:
 - New product reception
 - Staff/management change indicators
 
-### SECTION 7: SOCIAL MEDIA SENTIMENT
-- Hashtag analysis
-- Viral moments (positive or negative)
-- Influencer mentions
-- User-generated content themes
+### SECTION 7: SOCIAL MEDIA MENTIONS (Verified Posts Only)
+**IMPORTANT: Only include actual posts/comments you can directly reference.**
+
+For each social media mention found, include:
+- Platform (Instagram, TikTok, Twitter, Reddit, etc.)
+- Username/handle
+- Date of post
+- Direct quote or description of content
+- Link if available
+
+**If no social media mentions are found for this specific location, write: "No verified social media mentions found for this location."**
+
+Do NOT infer sentiment from "general engagement metrics" or assume what content might exist.
 
 ### SECTION 8: ACTIONABLE INSIGHTS SUMMARY
 Provide specific, actionable recommendations for:
@@ -473,44 +486,49 @@ Provide specific, actionable recommendations for:
 4. Marketing opportunities
 5. Competitive positioning strategies
 
-## SECTION 9: REVIEW STATISTICS & DATA SOURCES (MANDATORY)
-**THIS SECTION IS REQUIRED - You MUST include this exact breakdown:**
+## SECTION 9: REVIEW STATISTICS & DATA SOURCES (MANDATORY - ACTUAL DATA ONLY)
+**THIS SECTION IS REQUIRED - ONLY include counts from reviews you actually found and can cite.**
 
 ### 9.1 Total Reviews Analyzed
-- **Total number of reviews analyzed**: [exact count]
-- **Date range of reviews**: [earliest review date] to {today}
+- **Total number of reviews analyzed**: [exact count of reviews you found and quoted]
+- **Date range of reviews**: [earliest review date] to [latest review date]
 
-### 9.2 Reviews by Platform (provide exact counts)
-Create a table with the following format:
+**CRITICAL: Only count reviews you actually found and can reference. Do NOT estimate or project.**
+
+### 9.2 Reviews by Platform (EXACT counts only)
+Create a table with the following format. Use 0 if no reviews found on a platform:
 | Platform | # of Reviews | Date Range | Average Rating |
 |----------|--------------|------------|----------------|
-| Google Reviews | XX | MM/YYYY - MM/YYYY | X.X |
-| Yelp | XX | MM/YYYY - MM/YYYY | X.X |
-| Facebook | XX | MM/YYYY - MM/YYYY | X.X |
-| Instagram | XX mentions | MM/YYYY - MM/YYYY | N/A |
-| TripAdvisor | XX | MM/YYYY - MM/YYYY | X.X |
-| Reddit | XX mentions | MM/YYYY - MM/YYYY | N/A |
-| Twitter/X | XX mentions | MM/YYYY - MM/YYYY | N/A |
-| TikTok | XX mentions | MM/YYYY - MM/YYYY | N/A |
-| DoorDash | XX | MM/YYYY - MM/YYYY | X.X |
-| UberEats | XX | MM/YYYY - MM/YYYY | X.X |
-| Skip The Dishes | XX | MM/YYYY - MM/YYYY | X.X |
-| YouTube | XX | MM/YYYY - MM/YYYY | N/A |
-| Local Blogs | XX | MM/YYYY - MM/YYYY | N/A |
-| Other Sources | XX | MM/YYYY - MM/YYYY | N/A |
-| **TOTAL** | **XXX** | | |
+| Google Reviews | [exact count or 0] | [actual dates or N/A] | [actual avg or N/A] |
+| Yelp | [exact count or 0] | [actual dates or N/A] | [actual avg or N/A] |
+| Facebook | [exact count or 0] | [actual dates or N/A] | [actual avg or N/A] |
+| Instagram | [exact count or 0] | [actual dates or N/A] | N/A |
+| TripAdvisor | [exact count or 0] | [actual dates or N/A] | [actual avg or N/A] |
+| Reddit | [exact count or 0] | [actual dates or N/A] | N/A |
+| Twitter/X | [exact count or 0] | [actual dates or N/A] | N/A |
+| TikTok | [exact count or 0] | [actual dates or N/A] | N/A |
+| DoorDash | [exact count or 0] | [actual dates or N/A] | [actual avg or N/A] |
+| UberEats | [exact count or 0] | [actual dates or N/A] | [actual avg or N/A] |
+| Skip The Dishes | [exact count or 0] | [actual dates or N/A] | [actual avg or N/A] |
+| YouTube | [exact count or 0] | [actual dates or N/A] | N/A |
+| Local Blogs | [exact count or 0] | [actual dates or N/A] | N/A |
+| **TOTAL** | **[actual total]** | | |
 
-### 9.3 Rating Distribution by Category
-Provide breakdown using these exact categories:
-- **5 Stars (Perfect)**: XX reviews (XX%)
-- **4-5 Stars (Excellent)**: XX reviews (XX%)
-- **3-4 Stars (Mixed)**: XX reviews (XX%)
-- **≤3 Stars (Critical)**: XX reviews (XX%)
+**Do NOT estimate review counts. If you cannot access a platform's reviews, enter 0.**
+
+### 9.3 Rating Distribution (From Actual Reviews Only)
+Count only reviews you actually found and quoted:
+- **5 Stars (Perfect)**: [actual count] reviews ([actual %]%)
+- **4 Stars (Excellent)**: [actual count] reviews ([actual %]%)
+- **3 Stars (Mixed)**: [actual count] reviews ([actual %]%)
+- **2 Stars or below (Critical)**: [actual count] reviews ([actual %]%)
+
+**Do NOT estimate distributions based on averages. Only count reviews you have direct evidence of.**
 
 ### 9.4 Data Limitations
-- List any platforms where data was unavailable or limited
+- List any platforms where no data was found
 - Note any access restrictions encountered
-- Mention if certain date ranges had no data
+- Be transparent about gaps in data coverage
 
 ## SECTION 10: SENTIMENT ANALYSIS (MANDATORY)
 **THIS SECTION IS REQUIRED - Provide comprehensive sentiment analysis:**
@@ -551,15 +569,21 @@ Break down sentiment for each key area:
 
 ## OUTPUT FORMAT:
 - Be extremely detailed and thorough
-- Include specific quotes from reviews where possible
-- Provide counts/statistics where available
+- **EVERY insight MUST include a direct quote and source**
+- **NEVER estimate, infer, or project data**
+- If a section has no actual reviews, state "No verified reviews found"
 - Organize clearly by section
-- Include the source platform for each insight
-- **ALWAYS include Section 9 with exact review counts and date ranges**
-- **ALWAYS include Section 10 with comprehensive sentiment analysis**
-- Flag any data limitations or gaps in available information
+- Include reviewer name, platform, date, and rating for every quote
+- **ALWAYS include Section 9 with ONLY actual review counts found**
+- **ALWAYS include Section 10 with sentiment analysis based ONLY on actual reviews**
+- Be transparent about data gaps - it's better to show "0 reviews found" than to estimate
 
-Remember: This research will inform critical business decisions. Leave no stone unturned. The review statistics in Section 9 and sentiment analysis in Section 10 are MANDATORY and must be accurate.
+## FINAL REMINDER:
+**QUALITY OVER QUANTITY**: A report with 10 actual verified reviews is more valuable than one with 100 estimated/inferred reviews.
+**NO ESTIMATES**: Never use phrases like "estimated," "approximately," "likely," "typical," or "projected."
+**CITE EVERYTHING**: Every claim needs a direct quote with source attribution.
+
+Remember: This research will inform critical business decisions. Only verified, quotable data should be included.
 """
 
 
